@@ -64,29 +64,40 @@ print(resultado)
 
 ```{r}
 library(tidyverse)
-library(class)
+library(class)  
+
 
 data("iris")
 
+
 set.seed(123) 
-dados = iris %>%
+dados <- iris %>%
   select(Petal.Length, Sepal.Length, Species) %>%
   rename(x_1 = Petal.Length, x_2 = Sepal.Length, y = Species)
 
+
 n <- nrow(dados)
-indices = sample(1:n, size = round(0.8 * n)) 
-dados_treino = dados[indices, ]
-dados_teste = dados[-indices, ]
+indices <- sample(seq_len(n), size = round(0.8 * n))  
+dados_treino <- dados[indices, ]
+dados_teste <- dados[-indices, ]
 
 
-knn_k1 = knn(train = dados_treino[, 1:2], test = dados_teste[, 1:2], cl = dados_treino$y, k = 1)
-knn_k10 = knn(train = dados_treino[, 1:2], test = dados_teste[, 1:2], cl = dados_treino$y, k = 10)
+treino_matrix <- as.matrix(dados_treino[, c("x_1", "x_2")])
+teste_matrix <- as.matrix(dados_teste[, c("x_1", "x_2")])
+treino_classes <- as.factor(dados_treino$y) 
 
-valor_k1 = mean(knn_k1 == dados_teste$y)
-valor_k10 = mean(knn_k10 == dados_teste$y)
+
+knn_k1 <- class::knn(train = treino_matrix, test = teste_matrix, cl = treino_classes, k = 1)
+knn_k10 <- class::knn(train = treino_matrix, test = teste_matrix, cl = treino_classes, k = 10)
+
+
+valor_k1 <- mean(knn_k1 == dados_teste$y)
+valor_k10 <- mean(knn_k10 == dados_teste$y)
+
 
 print(paste("k = 1:", round(valor_k1 * 100, 2), "%"))
 print(paste("k = 10:", round(valor_k10 * 100, 2), "%"))
+
 
 ```
 
@@ -106,6 +117,7 @@ print(paste("A mediana da distância do ponto mais próximo à origem :", round(
 
 
 ```
+
 
 
 
