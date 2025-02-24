@@ -64,45 +64,49 @@ print(resultado)
 
 ```{r}
 library(tidyverse)
-library(purrr)
+library(class)
 
 data("iris")
-iris <- as_tibble(iris) %>%
+
+set.seed(123) 
+dados = iris %>%
   select(Petal.Length, Sepal.Length, Species) %>%
   rename(x_1 = Petal.Length, x_2 = Sepal.Length, y = Species)
 
-head(iris)
+n <- nrow(dados)
+indices = sample(1:n, size = round(0.8 * n)) 
+dados_treino = dados[indices, ]
+dados_teste = dados[-indices, ]
 
 
-avaliar_knn <- function(k) {
-  predicoes <- pmap_chr(as.list(iris), function(x_1, x_2, y) {
-    knn(k, c(x_1, x_2), iris %>% filter(!(x_1 == x_1 & x_2 == x_2)))
-  })
-  
-  sum(predicoes == iris$y) / nrow(iris)
-}
+knn_k1 = knn(train = dados_treino[, 1:2], test = dados_teste[, 1:2], cl = dados_treino$y, k = 1)
+knn_k10 = knn(train = dados_treino[, 1:2], test = dados_teste[, 1:2], cl = dados_treino$y, k = 10)
 
-k10 <- avaliar_knn(10)
-k1 <- avaliar_knn(1)
+valor_k1 = mean(knn_k1 == dados_teste$y)
+valor_k10 = mean(knn_k10 == dados_teste$y)
 
-print(k10)
-print(k1)
+print(paste("k = 1:", round(valor_k1 * 100, 2), "%"))
+print(paste("k = 10:", round(valor_k10 * 100, 2), "%"))
+
 ```
 
 ## Exercício 06
 
 ```{r}
 
-calcula_mediana <- function(m, d) {
+calcula_mediana = function(m, d) {
   return((1 - 0.5^(1/m))^(1/d))
 }
 
 # Exemplo para m=100 e d=3
-m <- 100
-d <- 3
+m = 100
+d = 3
 mediana_distancia <- calcula_mediana(m, d)
 print(paste("A mediana da distância do ponto mais próximo à origem :", round(mediana_distancia, 4)))
 
 
 ```
+
+
+
 
