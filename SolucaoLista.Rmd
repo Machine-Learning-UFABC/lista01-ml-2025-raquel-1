@@ -1,10 +1,10 @@
 ---
 title: "Solução Lista 01"
 author: |
-        | Nome: Fulano de Tal
-        | E-mail: fdt@aluno.ufabc.edu.br
-        | Nome: Fulano de Tal
-        | E-mail: fdt@aluno.ufabc.edu.br
+        | Nome: Raquel Ferreira Campos
+        | E-mail: raquel.campos@aluno.ufabc.edu.br
+        | Nome: Rodrigo Kaito Okuyama
+        | E-mail: kaito.o@aluno.ufabc.edu.br
         | (Não é preciso informar os RAs)
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: pdf_document
@@ -22,12 +22,70 @@ options(width =70)
 ```
 
 ## Exercício 01
+a) Problema de classificação: Pode ser usado para detecção de spam no email. Os vetores podem incluir a presença de links, número de caracteres especiais, frequência de palavras ligadas ao spam e outros. Logo, o rótulo vai ser: spam ou não spam.
 
+b) Problema de regressão: Pode ser usado para a previsão do preço de imóveis. Os vetores podem incluir o tamanho do imóvel, localização, números de quartos, etc. A resposta é o preço estimado do imóvel.
+
+c) Agrupamento: Pode ser usado para um sistema de organização por fotos, para agrupar imagens parecidas automatimente, como paisagens ou pessoas. Os vetores podem incluir cores dominantes, formas que estão na imagem, padrões de textura. Assim, vai ter uma saída com grupos como fotos de praia ou fotos de pessoas.
 
 ## Exercício 02
-
+A maldição da dimensionalidade ocorre quando trabalhamos com dados em espaços de alta dimensão, e a partir disso pode gerar alguns problemas como o aumento da complexidade computacional e a dificuldade de medir distâncias com precisão, porque os pontos geralmente ficam mais afastados.
 
 ## Exercício 03
+```{r}
+knn <- function(k, x, D) {
+  D$dist <- (x[1] - D$x1)^2 + (x[2] - D$x2)^2
+  
+  D_sorted <- D[order(D$dist), ]
+  nearest_neighbors <- head(D_sorted, k)
+  
+  most_common <- names(which.max(table(nearest_neighbors$y)))
+  
+  return(most_common)
+}
 
+# teste 
+set.seed(123)
+D <- data.frame(
+  x1 = rnorm(100, 1, 1),
+  x2 = rnorm(100, -1, 2),
+  y = factor(sample(c("one", "two", "three"), 100, replace = TRUE))
+)
+
+x_teste <- c(1, 2)
+k_valor <- 10
+
+resultado <- knn(k_valor, x_teste, D)
+print(resultado)
+
+```
 
 ## Exercício 04
+
+```{r}
+library(tidyverse)
+library(purrr)
+
+data("iris")
+iris <- as_tibble(iris) %>%
+  select(Petal.Length, Sepal.Length, Species) %>%
+  rename(x_1 = Petal.Length, x_2 = Sepal.Length, y = Species)
+
+head(iris)
+
+
+avaliar_knn <- function(k) {
+  predicoes <- pmap_chr(as.list(iris), function(x_1, x_2, y) {
+    knn(k, c(x_1, x_2), iris %>% filter(!(x_1 == x_1 & x_2 == x_2)))
+  })
+  
+  sum(predicoes == iris$y) / nrow(iris)
+}
+
+k10 <- avaliar_knn(10)
+k1 <- avaliar_knn(1)
+
+print(k10)
+print(k1)
+```
+
