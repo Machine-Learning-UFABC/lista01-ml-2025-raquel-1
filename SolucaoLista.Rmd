@@ -89,3 +89,20 @@ print(k10)
 print(k1)
 ```
 
+## Exercício 06
+
+```{r}
+
+calcula_mediana <- function(m, d) {
+  return((1 - 0.5^(1/m))^(1/d))
+}
+
+# Exemplo para m=100 e d=3
+m <- 100
+d <- 3
+mediana_distancia <- calcula_mediana(m, d)
+print(paste("A mediana da distância do ponto mais próximo à origem:", round(mediana_distancia, 4)))
+
+
+```
+
