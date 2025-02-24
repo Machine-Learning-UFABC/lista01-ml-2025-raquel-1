@@ -101,7 +101,7 @@ calcula_mediana <- function(m, d) {
 m <- 100
 d <- 3
 mediana_distancia <- calcula_mediana(m, d)
-print(paste("A mediana da distância do ponto mais próximo à origem:", round(mediana_distancia, 4)))
+print(paste("A mediana da distância do ponto mais próximo à origem :", round(mediana_distancia, 4)))
 
 
 ```
